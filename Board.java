@@ -25,7 +25,7 @@ public abstract class Board extends JPanel implements MouseInputListener {
 
     //Render Values
     Color colorShift = new Color(32,32,32);
-    Dimension offset = new Dimension(70,42);
+    Dimension offset = new Dimension(70,70);
     int strokeSize = 2;
 
     //Player array
@@ -47,6 +47,7 @@ public abstract class Board extends JPanel implements MouseInputListener {
     }
 
     Board(){
+        setPreferredSize(new Dimension(1024,512));
         System.out.print("new " + this.getClass().toString()+"\n");
         for(int k = 0;k<array.length;k++){
             for(int l = 0;l<array[k].length;l++){
@@ -197,6 +198,9 @@ public abstract class Board extends JPanel implements MouseInputListener {
     }
     public static Color subColors(Color c0, Color c1){
         return new Color(clip(c0.getRed()-c1.getRed(), 255), clip(c0.getGreen()-c1.getGreen(), 255), clip(c0.getBlue()-c1.getBlue(), 255));
+    }
+    public static Point getRandomPoint(Point min, Point max){
+        return new Point((int)(Math.random()*(max.x-min.x)+min.x),(int)(Math.random()*(max.y-min.y)+min.y));
     }
 
     /* 
