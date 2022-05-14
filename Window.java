@@ -14,6 +14,8 @@ public class Window extends JFrame {
     Window w = this;
     JPanel backGround;
 
+    void decoy() {}
+
     Window() {
         setTitle("Jeu de hex");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -25,13 +27,14 @@ public class Window extends JFrame {
         JPanel m0 = new JPanel();
         m0.setBackground(new Color(64,64,64));
         m0.setBounds(0,0,128,576);
+
         JButton b0 = new JButton("Mode 1v1");
         b0.addActionListener(new ActionListener(){  
             @Override
             public void actionPerformed(ActionEvent e) {
-                System.out.print("Btn0");
                 backGround.removeAll();
-                backGround.add(new Mode1v1());
+                game = new Mode1v1();
+                backGround.add(game);
                 pack();
                 repaint();
             }
@@ -42,9 +45,9 @@ public class Window extends JFrame {
         b1.addActionListener(new ActionListener(){  
             @Override
             public void actionPerformed(ActionEvent e) {
-                System.out.print("Btn0");
                 backGround.removeAll();
-                backGround.add(new ModeDebug());
+                game = new ModeDebug();
+                backGround.add(game);
                 pack();
                 repaint();
             }
@@ -55,14 +58,27 @@ public class Window extends JFrame {
         b2.addActionListener(new ActionListener(){  
             @Override
             public void actionPerformed(ActionEvent e) {
-                System.out.print("Btn0");
                 backGround.removeAll();
-                backGround.add(new Mode1vRDM());
+                game = new Mode1vRDM();
+                backGround.add(game);
                 pack();
                 repaint();
             }
         });
         m0.add(b2);
+
+        JButton b3 = new JButton("Mode Online");
+        b3.addActionListener(new ActionListener(){  
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                backGround.removeAll();
+                game = new Mode1vOnline();
+                backGround.add(game);
+                pack();
+                repaint();
+            }
+        });
+        m0.add(b3);
 
         bg.add(m0);
          backGround = new JPanel();
@@ -76,27 +92,11 @@ public class Window extends JFrame {
         setVisible(true);
         pack();
     }
-/*
-    public void initMenu(){
-        menu.setSize( 128, 128);
-        menu.setBackground(new Color(0,255,0));
-        JButton b = new JButton("Play 1v1");
-        b.setBounds(16, 16, 64, 32);
 
-        System.out.println(b.getBounds());
-        b.addActionListener(new ActionListener(){  
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                System.out.print("0\n");
-                
-                game = new Mode1v1();
-                menu.remove(b);
-                menu.add(game);
-                repaint();
-                
-                System.out.print("1\n");
-            }
-        }); 
-        menu.add(b);
-    }*/
+    public void run(){
+        Board.log("Start run\n");
+        while(true){
+            game.update();
+        }
+    }
 }

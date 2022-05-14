@@ -4,9 +4,7 @@ public class App {
     public static void main(String[] args) {
         System.out.print("Start -> \n");
         Window window = new Window();
-        while(true){
-            break;
-        }
+        window.run();
         System.out.print("End <- \n");
     }
 }

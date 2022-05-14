@@ -5,6 +5,9 @@ import java.awt.event.*;
 
 public class Mode1v1 extends Board {
 
+    @Override
+    public void update() {}
+
     Mode1v1() {
         addMouseListener(this);
     }
@@ -14,10 +17,7 @@ public class Mode1v1 extends Board {
 
     @Override
     public void mousePressed(MouseEvent e) {
-        System.out.print("Play success : " + play(screenToIndex(getMouse())) + "\n");
-        repaint();
-
-        System.out.print("Swap success : " + swap() + "\n");
+        play(screenToIndex(getMouse()));
         repaint();
     }
 

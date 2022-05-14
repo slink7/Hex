@@ -7,6 +7,8 @@ import javax.swing.event.MouseInputListener;
 
 public abstract class Board extends JPanel implements MouseInputListener {
 
+    public abstract void update();
+
     //
     Point firstPlay;
 
@@ -15,9 +17,9 @@ public abstract class Board extends JPanel implements MouseInputListener {
     Tile[][] array = new Tile[arraySize.x][arraySize.y];
     Tile[] bases = new Tile[] {
         new Tile(new Point(arraySize.x/2, -1), 1),
-        new Tile(new Point(-1, arraySize.y/2), 0),
+        new Tile(new Point(-1, arraySize.y/2), 2),
         new Tile(new Point(arraySize.x/2, arraySize.y), 1),
-        new Tile(new Point(arraySize.x, arraySize.y/2), 0)
+        new Tile(new Point(arraySize.x, arraySize.y/2), 2)
     };
 
     //Tile var
@@ -42,6 +44,14 @@ public abstract class Board extends JPanel implements MouseInputListener {
         for(int k = 0;k<array.length;k++){
             for(int l = 0;l<array[k].length;l++){
                 array[k][l].status = (int) Math.ceil(Math.random()*3.0) - 1;
+            }
+        }
+    }
+
+    public void fill(Player p){
+        for(int k = 0;k<array.length;k++){
+            for(int l = 0;l<array[k].length;l++){
+                array[k][l].status = p.ID;
             }
         }
     }

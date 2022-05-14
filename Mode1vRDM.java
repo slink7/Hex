@@ -6,11 +6,12 @@ import java.awt.event.*;
 
 public class Mode1vRDM extends Board {
 
-    Type t0 = Mode1vRDM.class;
-
     Mode1vRDM() {
         addMouseListener(this);
     }
+
+    @Override
+    public void update() {}
 
     @Override
     public void mouseClicked(MouseEvent e) {}

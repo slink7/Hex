@@ -1,4 +1,4 @@
-package TM9;
+package Hex;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -19,8 +19,7 @@ public class Channel {
 	private Queue<byte[]> events = new ArrayDeque<>();
 	private int id = 0;
 	private static final String addr = "https://prog-reseau-m1.lacl.fr/padiflac/";
-	private static final String nonce =
-			  "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+	private static final String nonce = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
 	private static final Random r = new Random();
 	
 	private String genNonce() {
