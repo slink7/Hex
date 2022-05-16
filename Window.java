@@ -96,7 +96,7 @@ public class Window extends JFrame {
     public void run(){
         Board.log("Start run\n");
         while(true){
-            game.update();
+            if(game != null) game.update();
         }
     }
 }
