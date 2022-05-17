@@ -5,9 +5,6 @@ import java.awt.event.*;
 
 public class Mode1v1 extends Board {
 
-    @Override
-    public void update() {}
-
     Mode1v1() {
         addMouseListener(this);
     }

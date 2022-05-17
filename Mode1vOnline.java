@@ -15,9 +15,6 @@ public class Mode1vOnline extends Board {
 
     int startPlayer = 0;
 
-    @Override
-    public void update() {}
-
     public void bobo() {
         log("Waiting for message...\n");
         //Get from channel left
@@ -50,8 +47,10 @@ public class Mode1vOnline extends Board {
             channel_receive = new Channel(channel_name+suffixLeft);
             log("Channel deteils ---\nSend on : " + channel_name+suffixRight + "\nReceive on : " + channel_name+suffixLeft+"\n");
         }
+        log("Preconnect");
         channel_send.connect();
         channel_receive.connect();
+        log("Postconnect");
 
         addMouseListener(this);
     }

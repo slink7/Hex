@@ -4,9 +4,6 @@ import java.awt.*;
 import java.awt.event.MouseEvent;
 
 public class ModeDebug extends Board  {
-    
-    @Override
-    public void update() {}
 
     ModeDebug() {
         addMouseListener(this);

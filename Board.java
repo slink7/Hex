@@ -7,8 +7,6 @@ import javax.swing.event.MouseInputListener;
 
 public abstract class Board extends JPanel implements MouseInputListener {
 
-    public abstract void update();
-
     //
     Point firstPlay;
 

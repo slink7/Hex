@@ -11,9 +11,6 @@ public class Mode1vRDM extends Board {
     }
 
     @Override
-    public void update() {}
-
-    @Override
     public void mouseClicked(MouseEvent e) {}
 
     @Override

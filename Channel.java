@@ -65,6 +65,7 @@ public class Channel {
 			id2 = "?id="+id;
 		}
 		URL u;
+		Board.log("Starting connection");
 		try {
 			u = new URL(addr+channel_name+id2);
 			URLConnection uc = u.openConnection();
@@ -74,6 +75,7 @@ public class Channel {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+		Board.log("Finished connecting");
 	}
 	
 	public String getNext() {
@@ -121,8 +123,9 @@ public class Channel {
 		}
 	}
 	
+	/*
 	public static void main(String[] args)  {
 		test();
 	}
-	
+	*/
 }
