@@ -96,7 +96,15 @@ public class Window extends JFrame {
     public void run(){
         Board.log("Start run\n");
         while(true){
-            if(game != null) game.update();
+            System.out.print("");
+            //Board.log("null:"+boolToString(game == null));
+            if(game != null){
+                //Board.log("online:"+boolToString(game.getClass() == Mode1vOnline.class));
+                if(game.getClass() == Mode1vOnline.class) ((Mode1vOnline)game).bobo();
+            }
+            //Board.log("");
         }
     }
+
+    public static String boolToString(boolean b) { return (b)?"true":"false"; }
 }

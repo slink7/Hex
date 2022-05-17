@@ -19,6 +19,7 @@ public class Mode1vOnline extends Board {
     public void update() {}
 
     public void bobo() {
+        log("Waiting for message...\n");
         //Get from channel left
         String play = channel_receive.getNext();
         log("Received " + play + "\n");
