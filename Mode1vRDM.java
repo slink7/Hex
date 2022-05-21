@@ -1,7 +1,6 @@
 package Hex;
 
 import java.awt.Point;
-
 import java.awt.event.*;
 
 public class Mode1vRDM extends Board {
@@ -20,7 +19,6 @@ public class Mode1vRDM extends Board {
             if(play(screenToIndex(getMouse()))){
                 repaint();
                 Point p0 = getRandomPoint(new Point(0,0), arraySize);
-                System.out.print("Tentative de l'AI : " + p0 + " \n");
                 int tentatives = 0;
                 while(!play(p0)){
                     p0 = getRandomPoint(new Point(0,0), arraySize);

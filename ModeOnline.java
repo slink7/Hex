@@ -1,12 +1,10 @@
 package Hex;
 
 import java.awt.Point;
-
 import java.awt.event.*;
-
 import javax.swing.JOptionPane;
 
-public class Mode1vOnline extends Board {
+public class ModeOnline extends Board {
 
     String suffixLeft = "_left", suffixRight = "_right";
 
@@ -16,12 +14,10 @@ public class Mode1vOnline extends Board {
     int startPlayer = 0;
 
     public void bobo() {
-        log("Waiting for message...\n");
-        //Get from channel left
+        log("Waiting for message...");
         String play = channel_receive.getNext();
-        log("Received " + play + "\n");
-        if(play != null) log("Received " + play + "\n");
-        if(playCount%2 == startPlayer) return;
+        if(play != null) log("Received \"" + play + "\""); else return;
+        if(playCount%2 == startPlayer) /* on a gagné */return;
         if(play.equals("SWAP")){
             if(!swap()) {/* on a gagné */}
         }else{
@@ -32,26 +28,32 @@ public class Mode1vOnline extends Board {
         repaint();
     }
 
-    Mode1vOnline() {
+    ModeOnline() {
 
         Object[] options = {"P1", "P2", "Cancel"};
         startPlayer = JOptionPane.showOptionDialog(null, "What player are you ?", "Player Selection", JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, null,options,options[2]);
         channel_name = JOptionPane.showInputDialog("What channel ?");
-        if(startPlayer == 0){ // J1
+
+        switch(startPlayer){
+        case 0:
             channel_send = new Channel(channel_name+suffixLeft);
             channel_receive = new Channel(channel_name+suffixRight);
-            log("Channel deteils ---\nSend on : " + channel_name+suffixLeft + "\nReceive on : " + channel_name+suffixRight+"\n");
-        }
-        if(startPlayer == 1){ // J2
+            break;
+        case 1:
             channel_send = new Channel(channel_name+suffixRight);
             channel_receive = new Channel(channel_name+suffixLeft);
-            log("Channel deteils ---\nSend on : " + channel_name+suffixRight + "\nReceive on : " + channel_name+suffixLeft+"\n");
+            break;
+        default:
+            return;
         }
-        log("Preconnect");
-        channel_send.connect();
-        channel_receive.connect();
-        log("Postconnect");
+        log("Channel details ---\nSend on : " + channel_send.getName() + "\nReceive on : " + channel_receive.getName() + "\n");
 
+        log("Connection .",0);
+        channel_send.connect();
+        log(" .",1);
+        channel_receive.connect();
+        log(" . Done.", 2);
+        
         addMouseListener(this);
     }
 
@@ -63,8 +65,13 @@ public class Mode1vOnline extends Board {
         if(playCount%2 == startPlayer){
             Point playPos = screenToIndex(getMouse());
             if(play(playPos)){
-                log("Sent " + playPos.x + " " + playPos.y + " \n");
-                channel_send.send(playPos.x + " " + playPos.y);
+                String message = playPos.x + " " + playPos.y;
+                log("Sent \"" + message + "\" \n");
+                channel_send.send(message);
+            }else if(playPos.equals(swapButtonPosition)){
+                String message = "SWAP";
+                log("Sent \"" + message + "\" \n");
+                channel_send.send(message);
             }
             repaint();
         }

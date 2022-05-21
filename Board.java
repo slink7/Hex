@@ -7,12 +7,17 @@ import javax.swing.event.MouseInputListener;
 
 public abstract class Board extends JPanel implements MouseInputListener {
 
+    //Parametres
+    boolean drawCurrentPlayer = true;
+    boolean allowSwap = true;
+    boolean endAfterWin = true;
+    
     //
     Point firstPlay;
 
     //Variables plateau
     Point arraySize = new Point(11,11);
-    Tile[][] array = new Tile[arraySize.x][arraySize.y];
+    private Tile[][] array = new Tile[arraySize.x][arraySize.y];
     Tile[] bases = new Tile[] {
         new Tile(new Point(arraySize.x/2, -1), 1),
         new Tile(new Point(-1, arraySize.y/2), 2),
@@ -37,6 +42,11 @@ public abstract class Board extends JPanel implements MouseInputListener {
 
     //Player values
     int playCount = 0;
+    boolean won = false;
+    Tile[] winningPath;
+    Player winner;
+
+    Point swapButtonPosition = new Point(arraySize.x + 2, 3);
 
     public void fill(){
         for(int k = 0;k<array.length;k++){
@@ -56,29 +66,55 @@ public abstract class Board extends JPanel implements MouseInputListener {
 
     Board(){
         setPreferredSize(new Dimension(1024,512));
-        System.out.print("new " + this.getClass().toString()+"\n");
+        log("new " + this.getClass().toString()+"\n");
         for(int k = 0;k<array.length;k++){
             for(int l = 0;l<array[k].length;l++){
                 array[k][l] = new Tile(new Point(k,l));
                 array[k][l].position = indexToScreen(array[k][l].pos);
             }
         }
-        // fill();
+        for(int k = 0;k<bases.length;k++){ bases[k].position = indexToScreen(bases[k].pos);}
+        updateNetwork();
+    }
+
+    public void updateWinner(){
+        winningPath = Pathfinder.findPath(bases[0], bases[2]);
+        if(winningPath != null) winner = players[1];
+        else {
+            winningPath = Pathfinder.findPath(bases[3], bases[1]);
+            if(winningPath != null) winner = players[2];
+            else winner = players[0];
+        }
+        won = winner != players[0];
+    }
+
+    public void setTile(Point p, int status){
+        if(endAfterWin && won) return;
+        if(!isInbetween(new Point(0,0), p, arraySize)) return;
+        array[p.x][p.y].status = status;
+        updateWinner();
+    }
+    public Tile getTile(Point p) {
+        if(isInbetween(new Point(0,0), p, arraySize)) return array[p.x][p.y];
+        else return null;
     }
 
     public boolean play(Point p){
+        if(endAfterWin && won) return false;
         if(isInbetween(0, p.x, arraySize.x-1) && isInbetween(0, p.y, arraySize.y-1) && array[p.x][p.y].status == players[0].ID){
             if(playCount == 0) firstPlay = p;
-            array[p.x][p.y].status = (playCount++ % 2) + 1;
+            setTile(p,(playCount++ % 2) + 1);
             return true;
         }
+        if(playCount == 1 && p.equals(swapButtonPosition)) swap();
         return false;
     }
 
     public boolean swap(){
         if(playCount == 1){
-            array[firstPlay.y][firstPlay.x].status = array[firstPlay.x][firstPlay.y].status;
+            array[firstPlay.y][firstPlay.x].status = (array[firstPlay.x][firstPlay.y].status*-1)+3;
             array[firstPlay.x][firstPlay.y].status = 0;
+            playCount++;
             return true;
         }
         return false;
@@ -145,12 +181,47 @@ public abstract class Board extends JPanel implements MouseInputListener {
         }
     }
 
+    public void drawPath(Graphics2D g2D, Tile[] path){
+        if(path == null) return;
+        int[] x = new int[path.length], y = new int[path.length];
+        for(int k = 0;k<path.length;k++){
+            x[k] = path[k].position.x;
+            y[k] = path[k].position.y;
+        }
+        // Juste pour faire joli, corrige l'emplacement du premier et dernier point du chemin pour les aligné avec leur voisin
+        if(path[0] == bases[1]){ x[0] = path[1].position.x + 32; y[0] = path[1].position.y; }
+        if(path[0] == bases[2]){ x[0] = path[1].position.x + 16; y[0] = path[1].position.y + 27; }
+        if(path[path.length-1] == bases[0]){ x[path.length-1] = path[path.length-2].position.x - 16; y[path.length-1] = path[path.length-2].position.y - 27; }
+        if(path[path.length-1] == bases[3]){ x[path.length-1] = path[path.length-2].position.x - 32; y[path.length-1] = path[path.length-2].position.y; }
+
+        g2D.setStroke(new BasicStroke(strokeSize));
+        g2D.setColor(new Color(255,255,0));
+        g2D.drawPolyline(x, y, path.length);
+    }
+    
+    public void drawUI(Graphics2D g2D){
+        if(drawCurrentPlayer){
+            Point p0 = indexToScreen(new Point(arraySize.x + 2, 1));
+            drawFancyPoly(g2D, hexagon.getXs(p0.x), hexagon.getYs(p0.y), players[(playCount%2)+1].color);
+            g2D.setColor(new Color(0,0,0));
+            g2D.drawString("Current Player", p0.x+24, p0.y+5);
+        }
+        if(allowSwap && playCount == 1){
+            Point p0 = indexToScreen(new Point(arraySize.x + 2, 3));
+            drawFancyPoly(g2D, hexagon.getXs(p0.x), hexagon.getYs(p0.y), new Color(200,125,50));
+            g2D.setColor(new Color(0,0,0));
+            g2D.drawString("Click to Swap", p0.x+24, p0.y+5);
+        }
+    }
+
     public void paint(Graphics g){
         Graphics2D g2D = (Graphics2D) g;
         clearScreen(g2D);
         drawBases(g2D);
         drawCoords(g2D);
         drawBoard(g2D);
+        drawUI(g2D);
+        drawPath(g2D, winningPath);
     }
 
     public void updateNetwork(){
@@ -199,7 +270,7 @@ public abstract class Board extends JPanel implements MouseInputListener {
         return isInbetween(min.x, val.x, max.x) && isInbetween(min.y, val.y, max.y);
     }
     public static int clip(int val, int max){
-        return (val+max)%max; 
+        return (val+10*max)%max; 
     }
     public static Color sumColors(Color c0, Color c1){
         return new Color(clip(c0.getRed()+c1.getRed(), 255), clip(c0.getGreen()+c1.getGreen(), 255), clip(c0.getBlue()+c1.getBlue(), 255));
@@ -210,11 +281,20 @@ public abstract class Board extends JPanel implements MouseInputListener {
     public static Point getRandomPoint(Point min, Point max){
         return new Point((int)(Math.random()*(max.x-min.x)+min.x),(int)(Math.random()*(max.y-min.y)+min.y));
     }
-
+    public static String boolToString(boolean b) { return (b)?"true":"false"; }
+    
     /* 
         Methodes de debug
     */
     public static void log(String s){
         System.out.print("["+LocalDateTime.now().getHour()+":"+LocalDateTime.now().getMinute()+":"+LocalDateTime.now().getSecond()+"] "+s+"\n");
+    }
+    public static void log(String s, int layer){
+        switch(layer){
+        case 0: System.out.print("["+LocalDateTime.now().getHour()+":"+LocalDateTime.now().getMinute()+":"+LocalDateTime.now().getSecond()+"] "+s); break;
+        case 1: System.out.print(s); break;
+        case 2: System.out.print(s+"\n"); break;
+        default: System.out.print("["+LocalDateTime.now().getHour()+":"+LocalDateTime.now().getMinute()+":"+LocalDateTime.now().getSecond()+"] "+s+"\n");
+        }
     }
 }

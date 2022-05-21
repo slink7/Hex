@@ -33,6 +33,10 @@ public class Channel {
 	public Channel(String channel_name) {
 		this.channel_name = channel_name;
 	}
+
+	public String getName(){
+		return channel_name;
+	}
 	
 	private byte[] serializeToString(String o) throws IOException {
 		return o.getBytes() ;
@@ -65,7 +69,6 @@ public class Channel {
 			id2 = "?id="+id;
 		}
 		URL u;
-		Board.log("Starting connection");
 		try {
 			u = new URL(addr+channel_name+id2);
 			URLConnection uc = u.openConnection();
@@ -75,7 +78,6 @@ public class Channel {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		Board.log("Finished connecting");
 	}
 	
 	public String getNext() {

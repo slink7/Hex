@@ -1,11 +1,10 @@
 package Hex;
 
-//import java.awt.*;
 import java.awt.event.*;
 
-public class Mode1v1 extends Board {
+public class ModeLocal extends Board {
 
-    Mode1v1() {
+    ModeLocal() {
         addMouseListener(this);
     }
 

@@ -8,6 +8,10 @@ public class ModeDebug extends Board  {
     ModeDebug() {
         addMouseListener(this);
         fill(); 
+
+        drawCurrentPlayer = false;
+        endAfterWin = false;
+                
     }
 
     @Override
@@ -17,7 +21,7 @@ public class ModeDebug extends Board  {
     public void mousePressed(MouseEvent e) {
         Point p = screenToIndex(getMouse());
         if(isInbetween(new Point(0,0), p, arraySize)){
-            array[p.x][p.y].status = (array[p.x][p.y].status + 1)%3;
+            setTile(p,(getTile(p).status + 1)%3);
         }
         repaint();
     }

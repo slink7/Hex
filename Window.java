@@ -6,88 +6,103 @@ import java.awt.event.ActionListener;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 public class Window extends JFrame {
     
     Board game;
     Window w = this;
-    JPanel backGround;
+    JPanel gamePanel;
 
     void decoy() {}
 
     Window() {
+
+        /* Initialise la fenetre et ajoute le background */
         setTitle("Jeu de hex");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setSize(new Dimension(1142,576));
-        JPanel bg = new JPanel();
-        bg.setPreferredSize(new Dimension(1142,576));
-        bg.setSize(new Dimension(1142,512));
+        JPanel background = new JPanel();
+        background.setPreferredSize(new Dimension(1142,576));
+        background.setSize(new Dimension(1142,512));
         
-        JPanel m0 = new JPanel();
-        m0.setBackground(new Color(64,64,64));
-        m0.setBounds(0,0,128,576);
+        /* Créé et ajoute le menu au background */
+        JPanel menu = new JPanel();
+        menu.setBackground(new Color(64,64,64));
+        menu.setBounds(0,0,128,576);
 
-        JButton b0 = new JButton("Mode 1v1");
+        /* Créé et ajoute la case pour le titre dans le menu */
+        JPanel titleBackground = new JPanel();
+        titleBackground.setBackground(new Color(255,255,255));
+        JLabel title = new JLabel("Game of Hex");
+        titleBackground.add(title);
+        menu.add(titleBackground);
+
+        /* Créé et ajoute le boutton de séléction ModeLocal */
+        JButton b0 = new JButton("Mode local");
         b0.addActionListener(new ActionListener(){  
             @Override
             public void actionPerformed(ActionEvent e) {
-                backGround.removeAll();
-                game = new Mode1v1();
-                backGround.add(game);
+                gamePanel.removeAll();
+                game = new ModeLocal();
+                gamePanel.add(game);
                 pack();
                 repaint();
             }
         });
-        m0.add(b0);
+        menu.add(b0);
 
+        /* Créé et ajoute le boutton de séléction ModeDebug */
         JButton b1 = new JButton("Mode Debug");
         b1.addActionListener(new ActionListener(){  
             @Override
             public void actionPerformed(ActionEvent e) {
-                backGround.removeAll();
+                gamePanel.removeAll();
                 game = new ModeDebug();
-                backGround.add(game);
+                gamePanel.add(game);
                 pack();
                 repaint();
             }
         });
-        m0.add(b1);
+        menu.add(b1);
 
+        /* Créé et ajoute le boutton de séléction Mode1vRDM */
         JButton b2 = new JButton("Mode AI naïve");
         b2.addActionListener(new ActionListener(){  
             @Override
             public void actionPerformed(ActionEvent e) {
-                backGround.removeAll();
+                gamePanel.removeAll();
                 game = new Mode1vRDM();
-                backGround.add(game);
+                gamePanel.add(game);
                 pack();
                 repaint();
             }
         });
-        m0.add(b2);
+        menu.add(b2);
 
+        /* Créé et ajoute le boutton de séléction ModeOnline */
         JButton b3 = new JButton("Mode Online");
         b3.addActionListener(new ActionListener(){  
             @Override
             public void actionPerformed(ActionEvent e) {
-                backGround.removeAll();
-                game = new Mode1vOnline();
-                backGround.add(game);
+                gamePanel.removeAll();
+                game = new ModeOnline();
+                gamePanel.add(game);
                 pack();
                 repaint();
             }
         });
-        m0.add(b3);
+        menu.add(b3);
 
-        bg.add(m0);
-         backGround = new JPanel();
-         backGround.setBounds(128, 0, 1024, 512);;
-        backGround.setBackground(new Color(64,64,64));
-        bg.add(backGround);
+        background.add(menu);
+        gamePanel = new JPanel();
+        gamePanel.setBounds(128, 0, 1024, 512);;
+        gamePanel.setBackground(new Color(64,64,64));
+        background.add(gamePanel);
         
         //initMenu();
-        add(bg);
+        add(background);
         repaint();
         setVisible(true);
         pack();
@@ -97,14 +112,9 @@ public class Window extends JFrame {
         Board.log("Start run\n");
         while(true){
             System.out.print("");
-            //Board.log("null:"+boolToString(game == null));
             if(game != null){
-                //Board.log("online:"+boolToString(game.getClass() == Mode1vOnline.class));
-                if(game.getClass() == Mode1vOnline.class) ((Mode1vOnline)game).bobo();
+                if(game.getClass() == ModeOnline.class) ((ModeOnline)game).bobo();
             }
-            //Board.log("");
         }
     }
-
-    public static String boolToString(boolean b) { return (b)?"true":"false"; }
 }

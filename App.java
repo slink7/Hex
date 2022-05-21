@@ -2,9 +2,9 @@ package Hex;
 
 public class App {
     public static void main(String[] args) {
-        System.out.print("Start -> \n");
+        Board.log("Starting Hex");
         Window window = new Window();
         window.run();
-        System.out.print("End <- \n");
+        Board.log("Ending Hex");
     }
 }
