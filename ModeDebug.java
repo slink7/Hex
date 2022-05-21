@@ -9,9 +9,9 @@ public class ModeDebug extends Board  {
         addMouseListener(this);
         fill(); 
 
+        //Parametre le mode Debug
         drawCurrentPlayer = false;
-        endAfterWin = false;
-                
+        endAfterWin = false;        
     }
 
     @Override
@@ -19,6 +19,7 @@ public class ModeDebug extends Board  {
 
     @Override
     public void mousePressed(MouseEvent e) {
+        //Change la tile cliquée par la tile suivante (Innocupée -> J1 -> J2 -> Innocupée)
         Point p = screenToIndex(getMouse());
         if(isInbetween(new Point(0,0), p, arraySize)){
             setTile(p,(getTile(p).status + 1)%3);

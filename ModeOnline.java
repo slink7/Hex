@@ -13,15 +13,15 @@ public class ModeOnline extends Board {
 
     int startPlayer = 0;
 
-    public void bobo() {
+    public void wait_msg() {
         log("Waiting for message...");
         String play = channel_receive.getNext();
         if(play != null) log("Received \"" + play + "\""); else return;
-        if(playCount%2 == startPlayer) /* on a gagné */return;
+        if(playCount%2 == startPlayer) /* on a gagné */ return;
         if(play.equals("SWAP")){
             if(!swap()) {/* on a gagné */}
         }else{
-            String[] words = play.split("\\W+");
+            String[] words = play.split("\\W+"); // sépare la String 'play' en 
             Point playPos = new Point(Integer.parseInt(words[0]), Integer.parseInt(words[1]));
             if(!play(playPos)) { /* on a gagné */}
         }
@@ -44,9 +44,10 @@ public class ModeOnline extends Board {
             channel_receive = new Channel(channel_name+suffixLeft);
             break;
         default:
+            log("???");
             return;
         }
-        log("Channel details ---\nSend on : " + channel_send.getName() + "\nReceive on : " + channel_receive.getName() + "\n");
+        log("Channel details ---\n Send on : " + channel_send.getName() + "\n Receive on : " + channel_receive.getName() + "\n");
 
         log("Connection .",0);
         channel_send.connect();

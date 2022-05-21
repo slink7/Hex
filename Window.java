@@ -113,7 +113,7 @@ public class Window extends JFrame {
         while(true){
             System.out.print("");
             if(game != null){
-                if(game.getClass() == ModeOnline.class) ((ModeOnline)game).bobo();
+                if(game.getClass() == ModeOnline.class) ((ModeOnline)game).wait_msg();
             }
         }
     }
