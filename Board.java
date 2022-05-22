@@ -47,6 +47,7 @@ public abstract class Board extends JPanel implements MouseInputListener {
 
 
     Board(){
+
         setPreferredSize(new Dimension(1024,512));
         log("new " + this.getClass().toString());
         

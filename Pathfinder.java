@@ -7,6 +7,8 @@ public class Pathfinder {
     public static Tile[] findPath(Tile A, Tile B){
         ArrayList<Tile> path = findPathRecursive(A, B, new ArrayList<Tile>(), new ArrayList<Tile>());
         if(path == null) return null;
+        
+        //Convertis l'ArrayList<Tile> en tableau
         Tile[] t0 = new Tile[path.size()];
         for(int k = 0;k<path.size();k++){
             t0[k] = path.get(k);
