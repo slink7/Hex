@@ -47,7 +47,7 @@ public abstract class Board extends JPanel implements MouseInputListener {
     Point swapButtonPosition = new Point(arraySize.x + 2, 3);
 
 
-    Board(){
+    protected Board(){
 
         setPreferredSize(new Dimension(1024,512));
         log("new " + this.getClass().toString());

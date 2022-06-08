@@ -95,6 +95,19 @@ public class Window extends JFrame {
         });
         menu.add(b3);
 
+        JButton b4 = new JButton("Mode AI Online");
+        b4.addActionListener(new ActionListener(){  
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                gamePanel.removeAll();
+                game = new ModeAIOnline();
+                gamePanel.add(game);
+                pack();
+                repaint();
+            }
+        });
+        menu.add(b4);
+
         background.add(menu);
         gamePanel = new JPanel();
         gamePanel.setBounds(128, 0, 1024, 512);;
@@ -114,6 +127,7 @@ public class Window extends JFrame {
             System.out.print("");
             if(game != null){
                 if(game.getClass() == ModeOnline.class) ((ModeOnline)game).wait_msg();
+                if(game.getClass() == ModeAIOnline.class) ((ModeAIOnline)game).wait_msg();
             }
         }
     }

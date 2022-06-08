@@ -1,35 +1,66 @@
 package Hex;
 
+import javax.swing.JOptionPane;
 import java.awt.*;
-import java.awt.event.*;
 import java.util.ArrayList;
 
-import javax.swing.JOptionPane;
-
-public class ModeAI extends Board {
-
+public class ModeAIOnline extends Board {
+    
     int startPlayer;
+    String channel_name;
+    String suffixLeft = "_left", suffixRight = "_right";
+    Channel channel_send, channel_receive;
 
     int AIstatus = 2;
     int advStatus = 1;
     int attackDir = 1;
 
-    ModeAI() {
-        addMouseListener(this);
+    ModeAIOnline() {
+
+        //addMouseListener(this);
 
         Object[] options = {"P1", "P2", "Cancel"};
         startPlayer = JOptionPane.showOptionDialog(null, "What player are you ?", "Player Selection", JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, null,options,options[2]);
+        channel_name = JOptionPane.showInputDialog("What channel ?");
         if(startPlayer == 0){
-            AIstatus = 2;
-            advStatus = 1;
-            attackDir = 1;
+            
         }else if(startPlayer == 1){
+            
+        }
+        switch(startPlayer){
+        case 0:
             AIstatus = 1;
             advStatus = 2;
             attackDir = 2;
+            
+            channel_send = new Channel(channel_name+suffixLeft);
+            channel_receive = new Channel(channel_name+suffixRight);
+            break;
+        case 1:
+            channel_send = new Channel(channel_name+suffixRight);
+            channel_receive = new Channel(channel_name+suffixLeft);
+
+            AIstatus = 2;
+            advStatus = 1;
+            attackDir = 1;
+
+            break;
+        default:
+            log("???");
+            return;
+        }
+        log("Channel details ---\n Send on : " + channel_send.getName() + "\n Receive on : " + channel_receive.getName() + "\n");
+    
+        log("Connection .",0);
+        channel_send.connect();
+        log(" .",1);
+        channel_receive.connect();
+        log(" . Done.", 2);
+
+        if(startPlayer == 0) {
             AIPlay();
         }
-        
+            
     }
 
     public class Collapser {
@@ -103,6 +134,9 @@ public class ModeAI extends Board {
 
     public boolean iplay(Point p){
         if(play(p)){
+            String msg = ""+p.x+" "+p.y;
+            log("Sent : \"" + msg+"\"");
+            channel_send.send(msg);
             checkCollapsers(getTile(p));
             checkConnectors(getTile(p));
             return true;
@@ -111,6 +145,12 @@ public class ModeAI extends Board {
     } 
 
     public boolean AIPlay(){
+
+        try {
+            Thread.sleep(500);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
 
         //Priorité a la resolution des collapsers
         for (Collapser c : collapsers) {
@@ -169,40 +209,41 @@ public class ModeAI extends Board {
 
         return false;
     }
-
-    @Override
-    public void mouseClicked(MouseEvent e) {}
-
-    @Override
-    public void mousePressed(MouseEvent e) {
-        if(playCount%2 == startPlayer){
-            if(play(screenToIndex(getMouse()))){
-                log("NEW ROUND =======================");
-                repaint();
-                lastTwo[2] = lastTwo[1];
-                lastTwo[1] = lastTwo[0];
-                lastTwo[0] = getTile(screenToIndex(getMouse()));
-                AIPlay();
-            }
-            repaint();
-        }
-
-    }
-
-    @Override
-    public void mouseReleased(MouseEvent e) {}
-
-    @Override
-    public void mouseEntered(MouseEvent e) {}
-
-    @Override
-    public void mouseExited(MouseEvent e) {}
-
-    @Override
-    public void mouseDragged(MouseEvent e) {}
-
-    @Override
-    public void mouseMoved(MouseEvent e) {}
     
-}
+    public void wait_msg() {
+        log("Waiting for message...");
+        String play = channel_receive.getNext();
+        if(play != null) log("Received \"" + play + "\""); else return;
+        if(playCount%2 == startPlayer) /* on a gagné */ return;
+        if(play.equals("SWAP")){
+            if(!swap()) {/* on a gagné */}
+        }else{
+            String[] words = play.split("\\W+"); // sépare la String 'play' en 
+            Point playPos = new Point(Integer.parseInt(words[0]), Integer.parseInt(words[1]));
+            if(!play(playPos)) { /* on a gagné */}
+        }
+        repaint();
+        AIPlay();
+    }
+    
+    @Override
+    public void mouseClicked(java.awt.event.MouseEvent e) {}
 
+    @Override
+    public void mousePressed(java.awt.event.MouseEvent e) {}
+
+    @Override
+    public void mouseReleased(java.awt.event.MouseEvent e) {}
+
+    @Override
+    public void mouseEntered(java.awt.event.MouseEvent e) {}
+
+    @Override
+    public void mouseExited(java.awt.event.MouseEvent e) {}
+
+    @Override
+    public void mouseDragged(java.awt.event.MouseEvent e) {}
+
+    @Override
+    public void mouseMoved(java.awt.event.MouseEvent e) {}
+}
