@@ -122,6 +122,7 @@ public abstract class Board extends JPanel implements MouseInputListener {
 
     public boolean swap(){
         if(playCount == 1){
+            if(firstPlay.x == firstPlay.y) { array[firstPlay.x][firstPlay.y].status = (array[firstPlay.x][firstPlay.y].status*-1)+3; playCount++; return true; }
             array[firstPlay.y][firstPlay.x].status = (array[firstPlay.x][firstPlay.y].status*-1)+3;
             array[firstPlay.x][firstPlay.y].status = 0;
             playCount++;

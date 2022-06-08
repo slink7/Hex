@@ -9,8 +9,7 @@ public class Mode1vRDM extends Board {
         addMouseListener(this);
     }
 
-    @Override
-    public void mouseClicked(MouseEvent e) {}
+    
 
     @Override
     public void mousePressed(MouseEvent e) {
@@ -44,5 +43,12 @@ public class Mode1vRDM extends Board {
 
     @Override
     public void mouseMoved(MouseEvent e) {}
+
+
+    @Override
+    public void mouseClicked(MouseEvent e) {
+        // TODO Auto-generated method stub
+        
+    }
 
 }
