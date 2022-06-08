@@ -23,10 +23,10 @@ public abstract class Board extends JPanel implements MouseInputListener {
     Point arraySize = new Point(11,11);
     private Tile[][] array = new Tile[arraySize.x][arraySize.y];
     Tile[] bases = new Tile[] {
-        new Tile(new Point(arraySize.x/2, -1), players[1].ID),
-        new Tile(new Point(-1, arraySize.y/2), players[2].ID),
-        new Tile(new Point(arraySize.x/2, arraySize.y), players[1].ID),
-        new Tile(new Point(arraySize.x, arraySize.y/2), players[2].ID)
+        new Tile(new Point(8, -1), players[1].ID),
+        new Tile(new Point(arraySize.x, 2), players[2].ID),
+        new Tile(new Point(2, arraySize.y), players[1].ID),
+        new Tile(new Point(-1, 8), players[2].ID),
     };
     
     //Variables pour l'affichage
@@ -38,6 +38,7 @@ public abstract class Board extends JPanel implements MouseInputListener {
     //Play values
     int playCount = 0;
     Point firstPlay;
+    Point lastPlay;
     boolean won = false;
     Tile[] winningPath;
     Player winner;
@@ -108,10 +109,11 @@ public abstract class Board extends JPanel implements MouseInputListener {
     }
 
     public boolean play(Point p){
-        if(endAfterWin && won) return false;
-        if(isInbetween(0, p.x, arraySize.x-1) && isInbetween(0, p.y, arraySize.y-1) && array[p.x][p.y].status == players[0].ID){
+        if(p == null || endAfterWin && won) return false;
+        if(isInbetween(new Point(0,0), p, arraySize) && array[p.x][p.y].status == players[0].ID){
             if(playCount == 0) firstPlay = p;
             setTile(p,(playCount++ % 2) + 1);
+            lastPlay = p;
             return true;
         }
         if(playCount == 1 && p.equals(swapButtonPosition)) swap();
@@ -155,6 +157,16 @@ public abstract class Board extends JPanel implements MouseInputListener {
         g2D.setColor(new Color(0,0,0));
         g2D.drawLine(p00.x, p00.y, p11.x, p11.y);
         g2D.drawLine(p10.x, p10.y, p01.x, p01.y);
+    }
+
+    public void drawBasesConnections(Graphics g2D){
+        for(int k = 0;k<4;k++){
+            Point p0 = bases[k].position;
+            for(int l = 0;l<11;l++){
+                Point p1 = bases[k].neighbors.get(l).position;
+                g2D.drawLine(p0.x, p0.y, p1.x, p1.y);
+            }
+        }
     }
 
     private void drawCoords(Graphics2D g2D){
@@ -202,10 +214,12 @@ public abstract class Board extends JPanel implements MouseInputListener {
         }
 
         // Juste pour faire joli, corrige l'emplacement du premier et dernier point du chemin pour les aligner avec leur voisin
+        
         if(path[0] == bases[1]){ x[0] = path[1].position.x + 32; y[0] = path[1].position.y; }
         if(path[0] == bases[2]){ x[0] = path[1].position.x + 16; y[0] = path[1].position.y + 27; }
         if(path[path.length-1] == bases[0]){ x[path.length-1] = path[path.length-2].position.x - 16; y[path.length-1] = path[path.length-2].position.y - 27; }
         if(path[path.length-1] == bases[3]){ x[path.length-1] = path[path.length-2].position.x - 32; y[path.length-1] = path[path.length-2].position.y; }
+        
 
         // Affiche le chemin
         g2D.setStroke(new BasicStroke(strokeSize));
@@ -240,6 +254,7 @@ public abstract class Board extends JPanel implements MouseInputListener {
         drawBoard(g2D);
         drawUI(g2D);
         drawPath(g2D, winningPath);
+        //drawBasesConnections(g2D);
     }
 
     public void updateNetwork(){ // Fonction qui met les voisins de toutes les tiles pour le pathfinding
@@ -286,7 +301,7 @@ public abstract class Board extends JPanel implements MouseInputListener {
     */
     
     public static boolean isInbetween(int min, int val, int max){ // Verifie si une valeur 'val' se trouve entre 'min' et 'max'
-        return (min <= val) && (val <= max);
+        return (min <= val) && (val < max);
     }
     public static boolean isInbetween(Point min, Point val, Point max){ // Verifie si un point 'val' se trouve entre 'min' et 'max'
         return isInbetween(min.x, val.x, max.x) && isInbetween(min.y, val.y, max.y);
@@ -303,7 +318,7 @@ public abstract class Board extends JPanel implements MouseInputListener {
     public static Point getRandomPoint(Point min, Point max){ // Retourne un point aléatoire entre 'min' et 'max'
         return new Point((int)(Math.random()*(max.x-min.x)+min.x),(int)(Math.random()*(max.y-min.y)+min.y));
     }
-    public static String boolToString(boolean b) { return (b)?"true":"false"; } //Convertis un booléen en String
+    public static String boolToString(boolean b) { return (b)?"1":"0"; } //Convertis un booléen en String
     
     /* 
         Methodes de debug

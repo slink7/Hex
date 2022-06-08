@@ -68,12 +68,12 @@ public class Window extends JFrame {
         menu.add(b1);
 
         /* Créé et ajoute le boutton de séléction Mode1vRDM */
-        JButton b2 = new JButton("Mode AI naïve");
+        JButton b2 = new JButton("Mode AI");
         b2.addActionListener(new ActionListener(){  
             @Override
             public void actionPerformed(ActionEvent e) {
                 gamePanel.removeAll();
-                game = new Mode1vRDM();
+                game = new ModeAI();
                 gamePanel.add(game);
                 pack();
                 repaint();

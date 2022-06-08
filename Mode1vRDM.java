@@ -1,6 +1,6 @@
 package Hex;
 
-import java.awt.Point;
+import java.awt.*;
 import java.awt.event.*;
 
 public class Mode1vRDM extends Board {
