@@ -226,6 +226,12 @@ public class ModeAIOnline extends Board {
         AIPlay();
     }
     
+    public boolean swap(){
+        boolean value = super.swap();
+        if(startPlayer == 1) AIPlay();
+        return value;
+    }
+
     @Override
     public void mouseClicked(java.awt.event.MouseEvent e) {}
 

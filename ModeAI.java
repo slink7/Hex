@@ -170,6 +170,12 @@ public class ModeAI extends Board {
         return false;
     }
 
+    public boolean swap(){
+        boolean value = super.swap();
+        if(startPlayer == 1) AIPlay();
+        return value;
+    }
+
     @Override
     public void mouseClicked(MouseEvent e) {}
 
@@ -177,7 +183,7 @@ public class ModeAI extends Board {
     public void mousePressed(MouseEvent e) {
         if(playCount%2 == startPlayer){
             if(play(screenToIndex(getMouse()))){
-                log("NEW ROUND =======================");
+                //log("NEW ROUND =======================");
                 repaint();
                 lastTwo[2] = lastTwo[1];
                 lastTwo[1] = lastTwo[0];
